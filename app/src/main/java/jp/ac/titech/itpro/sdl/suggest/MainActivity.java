@@ -24,6 +24,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    private final static String KEY_NAME = "MainActivity.name";
+    ArrayList<String> myList = new ArrayList<>();
     private EditText inputText;
     private ArrayAdapter<String> resultAdapter;
 
@@ -32,9 +34,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        inputText = (EditText)findViewById(R.id.input_text);
-        Button suggestButton = (Button)findViewById(R.id.suggest_button);
-        ListView resultList = (ListView)findViewById(R.id.result_list);
+        inputText = (EditText) findViewById(R.id.input_text);
+        Button suggestButton = (Button) findViewById(R.id.suggest_button);
+        ListView resultList = (ListView) findViewById(R.id.result_list);
 
         suggestButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,7 +46,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        resultAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, new ArrayList<String>());
+        if (savedInstanceState != null) {
+            myList = savedInstanceState.getStringArrayList(KEY_NAME);
+        }
+
+        resultAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, myList);
         resultList.setAdapter(resultAdapter);
         resultList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -55,6 +61,12 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putStringArrayList(KEY_NAME, myList);
     }
 
     private final static int MSG_RESULT = 1111;
